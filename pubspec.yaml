@@ -1,0 +1,44 @@
+name: catbreeds
+description: De acuerdo a la necesidad de la vacante, se requiere desarrollar una app en el sistema operativo solicitado (iOS, Android o Ambos) en la herramienta requerida (Android Studio, XCode, Visual Studio, Visual Code, Idea JetBrains) con el framework necesario (Nativo, Flutter, Reactive Native, Ionic, otros).
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.4.0
+
+dependencies:
+  bloc: ^8.1.4
+  dio: ^5.5.0+1
+  equatable: ^2.0.5
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.6
+  flutter_dotenv: ^5.1.0
+  flutter_localizations:
+    sdk: flutter
+  go_router: ^14.2.1
+  google_fonts: ^6.2.1
+  infinite_scroll_pagination: ^4.0.0
+  intl: ^0.19.0
+  rive: ^0.13.12
+  user_api:
+    path: packages/user_api
+  user_api_remote:
+    path: packages/user_api_remote
+  user_repository:
+    path: packages/user_repository
+
+dev_dependencies:
+  bloc_test: ^9.1.7
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+  very_good_analysis: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - .env
+    - assets/animations/

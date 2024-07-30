@@ -1,0 +1,23 @@
+name: user_api_remote
+description: User API Remote Package
+version: 0.1.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.4.0
+
+dependencies:
+  dio: ^5.5.0+1
+  flutter:
+    sdk: flutter
+  flutter_dotenv: ^5.1.0
+  rxdart: ^0.28.0
+  shared_preferences: ^2.2.3
+  user_api:
+    path: ../user_api
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^1.0.4
+  very_good_analysis: ^6.0.0
