@@ -1,26 +1,25 @@
-import 'package:catbreeds/home/home.dart';
+import 'package:catbreeds/search/search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:user_api/user_api.dart';
 
-class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+class SearchView extends StatelessWidget {
+  const SearchView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Catbreeds'),
+        title: const Text('Resultados de la búsqueda'),
       ),
       body: const Padding(
         padding: EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SearchBarHome(),
+            TextNameSearch(),
             SizedBox(height: 10),
-            CatsResultsHome(),
+            CatsResultsSearch(),
           ],
         ),
       ),
@@ -28,103 +27,81 @@ class HomeView extends StatelessWidget {
   }
 }
 
-class SearchBarHome extends StatelessWidget {
-  const SearchBarHome({super.key});
+class TextNameSearch extends StatelessWidget {
+  const TextNameSearch({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SearchAnchor(
-      builder: (context, controller) => SearchBar(
-        controller: controller,
-        padding: const WidgetStatePropertyAll<EdgeInsets>(
-          EdgeInsets.symmetric(horizontal: 10),
+    final name =
+        context.select<SearchCubit, String>((cubit) => cubit.state.name);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: RichText(
+        text: TextSpan(
+          text: 'Resultados para: ',
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontSize: 20,
+          ),
+          children: [
+            TextSpan(
+              text: name,
+              style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.normal,
+                fontSize: 20,
+              ),
+            ),
+          ],
         ),
-        elevation: const WidgetStatePropertyAll<double>(0),
-        onSubmitted: (value) => context.pushNamed(
-          'search',
-          pathParameters: {
-            'name': value,
-          },
-        ),
-        hintText: 'Buscar gato',
-        keyboardType: TextInputType.text,
-        leading: const Icon(Icons.search),
-        trailing: [
-          Tooltip(
-            message: 'Limpiar',
-            child: IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: () {
-                controller.clear();
+      ),
+    );
+  }
+}
+
+class CatsResultsSearch extends StatelessWidget {
+  const CatsResultsSearch({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SearchCubit, SearchState>(
+      buildWhen: (previous, current) => previous.status != current.status,
+      builder: (context, state) {
+        if (state.status.isLoading) {
+          return const Expanded(
+            child: Center(child: CircularProgressIndicator()),
+          );
+        } else if (state.status.isSuccess) {
+          if (state.cats.isEmpty) {
+            return const Expanded(
+              child: Center(child: Text('No se encontraron gatos')),
+            );
+          }
+          return Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              itemCount: state.cats.length,
+              itemBuilder: (context, index) {
+                final cat = state.cats[index];
+                return CatCardSearch(cat: cat);
               },
             ),
-          ),
-        ],
-      ),
-      suggestionsBuilder: (context, controller) => [const SizedBox.shrink()],
-    );
-  }
-}
-
-class CatsResultsHome extends StatefulWidget {
-  const CatsResultsHome({super.key});
-
-  @override
-  State<CatsResultsHome> createState() => _CatsResultsHomeState();
-}
-
-class _CatsResultsHomeState extends State<CatsResultsHome> {
-  static const _pageSize = 10;
-
-  final PagingController<int, Cat> _pagingController =
-      PagingController(firstPageKey: 0);
-
-  @override
-  void initState() {
-    _pagingController.addPageRequestListener(_fetchPage);
-    super.initState();
-  }
-
-  Future<void> _fetchPage(int pageKey) async {
-    try {
-      final newItems = await context.read<HomeCubit>().getCats(
-            pageKey,
-            _pageSize,
           );
-      final isLastPage = newItems.length < _pageSize;
-      if (isLastPage) {
-        _pagingController.appendLastPage(newItems);
-      } else {
-        final nextPageKey = pageKey + 1;
-        _pagingController.appendPage(newItems, nextPageKey);
-      }
-    } catch (error) {
-      _pagingController.error = error;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: RefreshIndicator(
-        onRefresh: () => Future.sync(_pagingController.refresh),
-        child: PagedListView<int, Cat>(
-          pagingController: _pagingController,
-          physics: const AlwaysScrollableScrollPhysics(),
-          builderDelegate: PagedChildBuilderDelegate<Cat>(
-            noItemsFoundIndicatorBuilder: (context) => const Center(
-              child: Text('No se encontraron gatos'),
-            ),
-            itemBuilder: (context, cat, index) => CatCardHome(cat: cat),
-          ),
-        ),
-      ),
+        } else {
+          return const Expanded(
+            child: Center(child: Text('No se encontraron gatos')),
+          );
+        }
+      },
     );
   }
 }
 
-class CatCardHome extends StatelessWidget {
-  const CatCardHome({
+class CatCardSearch extends StatelessWidget {
+  const CatCardSearch({
     required this.cat,
     super.key,
   });
@@ -182,7 +159,7 @@ class CatCardHome extends StatelessWidget {
               width: double.infinity,
               height: 200,
               child: FutureBuilder<String>(
-                future: context.read<HomeCubit>().getCatImage(
+                future: context.read<SearchCubit>().getCatImage(
                       cat.reference_image_id,
                     ),
                 builder: (context, snapshot) {
