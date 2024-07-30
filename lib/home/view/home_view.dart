@@ -167,7 +167,7 @@ class CatCardHome extends StatelessWidget {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => context.goNamed('home-details', extra: cat),
                   child: const Text(
                     'Ver más',
                     style: TextStyle(

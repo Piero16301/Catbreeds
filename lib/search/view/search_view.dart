@@ -1,6 +1,7 @@
 import 'package:catbreeds/search/search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:user_api/user_api.dart';
 
 class SearchView extends StatelessWidget {
@@ -67,7 +68,6 @@ class CatsResultsSearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SearchCubit, SearchState>(
-      buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
         if (state.status.isLoading) {
           return const Expanded(
@@ -110,6 +110,10 @@ class CatCardSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final name = context.select<SearchCubit, String>(
+      (cubit) => cubit.state.name,
+    );
+
     return Card(
       elevation: 5,
       margin: const EdgeInsets.all(10),
@@ -144,7 +148,13 @@ class CatCardSearch extends StatelessWidget {
                   ),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () => context.goNamed(
+                    'search-details',
+                    pathParameters: {
+                      'name': name,
+                    },
+                    extra: cat,
+                  ),
                   child: const Text(
                     'Ver más',
                     style: TextStyle(

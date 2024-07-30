@@ -1,7 +1,9 @@
+import 'package:catbreeds/details/details.dart';
 import 'package:catbreeds/home/home.dart';
 import 'package:catbreeds/search/search.dart';
 import 'package:catbreeds/splash/splash.dart';
 import 'package:go_router/go_router.dart';
+import 'package:user_api/user_api.dart';
 
 GoRouter goRouter() {
   return GoRouter(
@@ -23,6 +25,24 @@ GoRouter goRouter() {
             builder: (context, state) {
               final name = state.pathParameters['name']!;
               return SearchPage(name: name);
+            },
+            routes: [
+              GoRoute(
+                name: 'search-details',
+                path: 'search-details',
+                builder: (context, state) {
+                  final cat = state.extra! as Cat;
+                  return DetailsPage(cat: cat);
+                },
+              ),
+            ],
+          ),
+          GoRoute(
+            name: 'home-details',
+            path: 'home-details',
+            builder: (context, state) {
+              final cat = state.extra! as Cat;
+              return DetailsPage(cat: cat);
             },
           ),
         ],
