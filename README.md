@@ -164,6 +164,6 @@ A continuación, se muestran algunas capturas de pantalla de la app:
 
 ## Demo 🎥
 
-A continuación, se muestra un ![GIF](https://storage.googleapis.com/maersk-entregas-production/demo.gif) de la app:
+A continuación, se muestra un [GIF demostrativo](https://storage.googleapis.com/maersk-entregas-production/demo.gif) de la app:
 
 ![Catbreeds Demo](https://storage.googleapis.com/maersk-entregas-production/demo.gif)
