@@ -154,21 +154,13 @@ packages
 
 A continuación, se muestran algunas capturas de pantalla de la app:
 
-### Splash Screen
+| Splash Screen | Home |
+| ------------- | ---- |
+| ![Splash Screen](images/splash_screen.png) | ![Home](images/home.png) |
 
-![Splash Screen](images/splash_screen.png)
-
-### Home
-
-![Home](images/home.png)
-
-### Search
-
-![Search](images/search.png)
-
-### Details
-
-![Details](images/details.png)
+| Search | Details |
+| ------ | ------- |
+| ![Search](images/search.png) | ![Details](images/details.png) |
 
 ## Demo 🎥
 
